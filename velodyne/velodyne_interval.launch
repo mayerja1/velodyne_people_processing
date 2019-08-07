@@ -12,7 +12,7 @@
   <node pkg="rosbag" type="record" name="rosbag_record" args="/people_tracker/positions -O $(arg output_bag)"/>
 
   <node pkg="velodyne_pointcloud" type="cloud_node" name="cloud_node">
-    <param name="calibration" value="$(env PWD)/32db.yaml"/>
+    <param name="calibration" value="$(env PWD)/velodyne/32db.yaml"/>
     <param name="min_range" value="0.4"/>
     <param name="max_range" value="130.0"/>
   </node>
@@ -24,7 +24,7 @@
   </node>
 
   <!-- bayesian Tracking -->
-  <rosparam command="load" file="$(env PWD)/velodyne_detector.yaml"/>
+  <rosparam command="load" file="$(env PWD)/velodyne/velodyne_detector.yaml"/>
   <node pkg="bayes_people_tracker" type="bayes_people_tracker" name="bayes_people_tracker" respawn="true">
     <param name="base_link" type="string" value="velodyne"/>
     <param name="target_frame" type="string" value="map"/>

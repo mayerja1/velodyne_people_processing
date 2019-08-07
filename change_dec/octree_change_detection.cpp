@@ -108,6 +108,9 @@ std::vector<float> find_changes (std::vector<state>& states) {
   std::vector<double> changes;
   // sort because vector might not be sorted due to paralelization
   std::sort(states.begin(), states.end(), [](state& s1, state& s2) {return s1.time < s2.time;});
+  //for (state& s : states) {
+    //std::cout << s.time << ' ' << s.changes << '\n';
+  //}
   for (const state& s: states) {
     changes.push_back(s.changes);
   }
@@ -147,6 +150,10 @@ int main (int argc, char* argv[]) {
   if (argc < 2) {
     std::cout << "enter rosbag name as first paramater" << '\n';
     return 1;
+  }
+  if (!omp_get_cancellation()) {
+    std::cout << "set OMP_CANCELLATION to true and run again" << '\n';
+    return 2;
   }
   const int batch_size = 3000;
   //process_dat(argv[1]);

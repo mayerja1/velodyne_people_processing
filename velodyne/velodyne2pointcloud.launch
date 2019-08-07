@@ -3,14 +3,14 @@
   <!-- rosbag play -->
   <arg name="bag"/>
   <param name="use_sim_time" value="true"/>
-  <node pkg="rosbag" type="play" name="rosbag_play" args="-r 7 --clock $(arg bag)" required="true" output="screen"/>
+  <node pkg="rosbag" type="play" name="rosbag_play" args="-r 7 --clock $(arg bag)" required="true"/>
 
   <!-- rosbaf record -->
   <arg name="output_bag"/>
   <node pkg="rosbag" type="record" name="rosbag_record" args="/velodyne_points -O $(arg output_bag)"/>
 
   <node pkg="velodyne_pointcloud" type="cloud_node" name="cloud_node">
-    <param name="calibration" value="$(env PWD)/32db.yaml"/>
+    <param name="calibration" value="$(env PWD)/velodyne/32db.yaml"/>
     <param name="min_range" value="0.4"/>
     <param name="max_range" value="130.0"/>
   </node>

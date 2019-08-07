@@ -7,35 +7,36 @@ function gdrive_download () {
 
 BAGFILENAME=$(pwd)"/tmp/velodyne.bag"
 PCLBAGFILENAME=$(pwd)"/tmp/pcl.bag"
-LINKSFILENAME="links.txt"
-CHANGESFILENAME="/tmp/changes.txt"
+LINKSFILENAME=$(pwd)"/links.txt"
+CHANGESFILENAME=$(pwd)"/tmp/changes.txt"
 curbag=1
 #preparation
 source ~/catkin_ws/devel/setup.bash
+export OMP_CANCELLATION=true
 mkdir -p output
-rm -rf tmp
-mkdir tmp
+#rm -rf tmp
+#mkdir tmp
 
 while read line; do
   line=($line)
   curbagname=${line[0]}
   echo processing bag no. $curbag
-  if [ -d $(pwd)/output/$curbagname ]; then
-    echo bag already processed, moving on
-    ((curbag++))
-    continue
-  fi
+  #if [ -d $(pwd)/output/$curbagname ]; then
+  #  echo bag already processed, moving on
+  #  ((curbag++))
+  #  continue
+  #fi
   #download the bag
   echo started downloading $curbagname
-  gdrive_download ${line[1]} $BAGFILENAME < /dev/null &> /dev/null
+  #gdrive_download ${line[1]} $BAGFILENAME < /dev/null &> /dev/null
   echo download finished
   #convert it to pointcloud
   echo started converting velodyne scans to point cloud to $PCLBAGFILENAME
-  roslaunch velodyne/velodyne2pointcloud.launch bag:=$BAGFILENAME output_bag:=$PCLBAGFILENAME < /dev/null &> /dev/null
+  #roslaunch velodyne/velodyne2pointcloud.launch bag:=$BAGFILENAME output_bag:=$PCLBAGFILENAME < /dev/null &> /dev/null
   echo converting finished
   #run the change detection
   echo started change detection
-  change_dec/octree_change_detection $PCLBAGFILENAME < /dev/null 2> /dev/null > $CHANGESFILENAME
+  #change_dec/octree_change_detection $PCLBAGFILENAME < /dev/null 2> /dev/null > $CHANGESFILENAME
   echo change detection finished
   #run people detector on intervals and save the data
   echo starting people detector
@@ -52,10 +53,11 @@ while read line; do
     ((curint++))
   done < $CHANGESFILENAME
   echo detecting finished
+  break
   #clean up
-  rm $PCLBAGFILENAME
-  rm $BAGFILENAME
-  #break #for testing purposes
+  #rm $PCLBAGFILENAME
+  #rm $BAGFILENAME
   ((curbag++))
 done < $LINKSFILENAME
+#rm -rf tmp
 echo all rosbags processed
