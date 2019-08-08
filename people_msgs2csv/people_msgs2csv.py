@@ -29,7 +29,7 @@ if __name__ == '__main__':
         file.write('t,id,pos_x,pos_y,pos_z,orient_x,orient_y,orient_z,orient_w,vel_x,vel_y,vel_z\n')
         for _, msg, t in bag.read_messages(topics=['/people_tracker/positions']):
             pplcnt = 0
-            for id, pose, vel in zip(msg.uuids, msg.poses, msg.vels):
+            for id, pose, vel in zip(msg.uuids, msg.poses, msg.velocities):
                 speed = np.linalg.norm([vel.position.x, vel.position.y, vel.position.z])
                 # skip things not moving or moving insanely fast
                 if not LOWEST_HUMAN_SPEED < speed < HIGHEST_HUMAN_SPEED: continue

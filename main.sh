@@ -40,7 +40,7 @@ while read line; do
   echo converting finished
   #run the change detection
   echo started change detection
-  #change_dec/octree_change_detection $PCLBAGFILENAME < /dev/null 2> /dev/null > $CHANGESFILENAME
+  change_dec/octree_change_detection $PCLBAGFILENAME < /dev/null 2> /dev/null > $CHANGESFILENAME
   echo change detection finished
   #run people detector on intervals and save the data
   echo starting people detector
