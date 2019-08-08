@@ -9,8 +9,8 @@ simple script that reads bags that contain PeopeTracker messages published on
 /people_tracker/positions topic. also filters out obviously wrong detections
 '''
 
-HIGHEST_HUMAN_SPEED  = 11.9 # speed of Usain Bolt
-LOWEST_HUMAN_SPEED   = 0.01 # 1 cm/s
+HIGHEST_HUMAN_SPEED  = 2.5
+LOWEST_HUMAN_SPEED   = 0.5
 
 # get a line of csv file from a list of values
 def list2csv(li):
@@ -33,6 +33,7 @@ if __name__ == '__main__':
                 speed = np.linalg.norm([vel.position.x, vel.position.y, vel.position.z])
                 # skip things not moving or moving insanely fast
                 if not LOWEST_HUMAN_SPEED < speed < HIGHEST_HUMAN_SPEED: continue
+                ids.add(id)
                 file.write(list2csv([t, id, pose.position.x, pose.position.y, pose.position.z, \
                                             pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w, \
                                             vel.position.x, vel.position.y, vel.position.z]))
