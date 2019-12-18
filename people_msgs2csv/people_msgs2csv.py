@@ -36,7 +36,6 @@ if __name__ == '__main__':
                 speed = np.linalg.norm([vel.position.x, vel.position.y, vel.position.z])
                 # skip things not moving or moving insanely fast
                 if not LOWEST_HUMAN_SPEED < speed < HIGHEST_HUMAN_SPEED: continue
-                ids.add(id)
                 file.write(list2csv([t, id, pose.position.x, pose.position.y, pose.position.z, \
                                             pose.orientation.x, pose.orientation.y, pose.orientation.z, pose.orientation.w, \
                                             vel.position.x, vel.position.y, vel.position.z]))
