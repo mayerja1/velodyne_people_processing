@@ -8,7 +8,7 @@ function gdrive_download () {
 #used paths
 BAGFILENAME=$(pwd)"/tmp/velodyne.bag"
 PCLBAGFILENAME=$(pwd)"/tmp/pcl.bag"
-LINKSFILENAME=$(pwd)"/links.txt"
+LINKSFILENAME=$(pwd)"/ssdbags.txt"
 CHANGESFILENAME=$(pwd)"/tmp/changes.txt"
 
 #preparation
@@ -24,19 +24,21 @@ curbag=1
 while read line; do
   line=($line)
   curbagname=${line[0]}
-  echo processing bag no. $curbag
-  if [ -d $(pwd)/output/$curbagname ]; then
-    echo bag already processed, moving on
-    ((curbag++))
-    continue
-  fi
+  curbagpath=$curbagname
+  curbagname=$(basename $curbagname)
+  echo processing bag $curbagname
+  #if [ -d $(pwd)/output/$curbagname ]; then
+  #  echo bag already processed, moving on
+  #  ((curbag++))
+  #  continue
+  #fi
   #download the bag
-  echo started downloading $curbagname
-  gdrive_download ${line[1]} $BAGFILENAME < /dev/null &> /dev/null
-  echo download finished
+  #echo started downloading $curbagname
+  #gdrive_download ${line[1]} $BAGFILENAME < /dev/null &> /dev/null
+  #echo download finished
   #convert it to pointcloud
   echo started converting velodyne scans to point cloud to $PCLBAGFILENAME
-  roslaunch velodyne/velodyne2pointcloud.launch bag:=$BAGFILENAME output_bag:=$PCLBAGFILENAME < /dev/null &> /dev/null
+  roslaunch velodyne/velodyne2pointcloud.launch bag:=$curbagpath output_bag:=$PCLBAGFILENAME < /dev/null &> /dev/null
   echo converting finished
   #run the change detection
   echo started change detection
@@ -53,13 +55,13 @@ while read line; do
     end=${arr[1]}
     length=$((end-start))
     roslaunch velodyne/velodyne_interval.launch bag:=$BAGFILENAME start:=$start length:=$length output_bag:=$OUTPUTPATH/$curint < /dev/null &> /dev/null
-    python people_msgs2csv/people_msgs2csv.py $OUTPUTPATH/$curint.bag $OUTPUTPATH/$curint.csv
+    #python people_msgs2csv/people_msgs2csv.py $OUTPUTPATH/$curint.bag $OUTPUTPATH/$curint.csv
     ((curint++))
   done < $CHANGESFILENAME
   echo detecting finished
   #clean up
   rm $PCLBAGFILENAME
-  rm $BAGFILENAME
+  #rm $BAGFILENAME
   ((curbag++))
 done < $LINKSFILENAME
 rm -rf tmp/*
