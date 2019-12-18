@@ -7,6 +7,9 @@ from sys import argv
 '''
 simple script that reads bags that contain PeopeTracker messages published on
 /people_tracker/positions topic. also filters out obviously wrong detections
+
+
+doesnt matter what this does as results wont be used anyways
 '''
 
 HIGHEST_HUMAN_SPEED  = 2.5
