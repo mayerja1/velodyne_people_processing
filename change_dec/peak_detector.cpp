@@ -19,11 +19,11 @@ double stdDev(std::vector<double>& v, double m) {
 std::vector<int> smoothedZScore(std::vector<double>& input)
 {
     //lag for the smoothing functions
-    unsigned int lag = 700;
+    unsigned int lag = 150;
     //number of  standard deviations for signal
-    double threshold = 4.15;
+    double threshold = 5.759;
     //between 0 and 1, where 1 is normal influence, 0.5 is half
-    double influence = 0.0005;
+    double influence = 0.0025;
 
     if (input.size() <= lag + 2)
     {
