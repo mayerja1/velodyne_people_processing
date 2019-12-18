@@ -28,7 +28,7 @@ using PointType = pcl::PointXYZ;
 using Cloud = pcl::PointCloud<PointType>;
 
 /*
-This program reads pointcloud2 messages from a rosebag and outputs intervals where it thinks
+This program reads pointcloud2 messages from a rosbag and outputs intervals where it thinks
 something is happening (ideally someone is walking there)
 */
 
@@ -108,11 +108,9 @@ std::vector<float> find_changes (std::vector<state>& states) {
   std::vector<double> changes;
   // sort because vector might not be sorted due to paralelization
   std::sort(states.begin(), states.end(), [](state& s1, state& s2) {return s1.time < s2.time;});
-  //for (state& s : states) {
-    //std::cout << s.time << ' ' << s.changes << '\n';
-  //}
   for (const state& s: states) {
     changes.push_back(s.changes);
+    //std::cout << s.time << ' ' << s.changes << '\n';
   }
   std::vector<int> signals = smoothedZScore(changes);
   assert(signals.size() != 0);
@@ -152,7 +150,7 @@ int main (int argc, char* argv[]) {
     return 1;
   }
   if (!omp_get_cancellation()) {
-    std::cout << "set OMP_CANCELLATION to true and run again" << '\n';
+    std::cout << "set OMP_CANCELLATION by typing 'export OMP_CANCELLATION=true' and run again" << '\n';
     return 2;
   }
   const int batch_size = 3000;
@@ -228,6 +226,9 @@ int main (int argc, char* argv[]) {
       pcl_conversions::toPCL(*msg, pcl_pc2);
       Cloud::Ptr cloudB(new Cloud);
       pcl::fromPCLPointCloud2(pcl_pc2,*cloudB);
+
+      //pcl::io::savePCDFile("reference.pcd", cloudB);
+      //return 1;
 
       // Add points from cloudB to octree
       octree.setInputCloud (cloudB);
