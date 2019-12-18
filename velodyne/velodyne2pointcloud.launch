@@ -3,9 +3,9 @@
   <!-- rosbag play -->
   <arg name="bag"/>
   <param name="use_sim_time" value="true"/>
-  <node pkg="rosbag" type="play" name="rosbag_play" args="-r 7 --clock $(arg bag)" required="true"/>
+  <node pkg="rosbag" type="play" name="rosbag_play" args="-r 8 --clock $(arg bag)" required="true"/>
 
-  <!-- rosbaf record -->
+  <!-- rosbag record -->
   <arg name="output_bag"/>
   <node pkg="rosbag" type="record" name="rosbag_record" args="/velodyne_points -O $(arg output_bag)"/>
 
