@@ -13,4 +13,4 @@ In order to run:
 
 if you have the data anywhere else than on Google drive, you need to modify the `main.sh` accordingly  
 
-you will need (a lot of) free disk space for the downloaded bag and the bag with the pointcloud data, in which the downloaded bag transforms to  
+you will need (a lot of) free disk space for the downloaded bag and the bag with the pointcloud data, which the downloaded bag transforms into  
