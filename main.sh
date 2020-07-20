@@ -63,7 +63,6 @@ while read line; do
   rm $PCLBAGFILENAME
   rm $BAGFILENAME
   ((curbag++))
-  break
 
 done < $LINKSFILENAME
 rm -rf tmp/*
