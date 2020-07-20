@@ -2,6 +2,8 @@
 #include <numeric>
 #include <cmath>
 #include <algorithm>
+
+
 double mean(std::vector<double>& v) {
   double sum = std::accumulate(std::begin(v), std::end(v), 0.0);
   return sum / v.size();
@@ -21,7 +23,7 @@ std::vector<int> smoothedZScore(std::vector<double>& input)
     //lag for the smoothing functions
     unsigned int lag = 150;
     //number of  standard deviations for signal
-    double threshold = 5.759;
+    double threshold = 2.5;
     //between 0 and 1, where 1 is normal influence, 0.5 is half
     double influence = 0.0025;
 

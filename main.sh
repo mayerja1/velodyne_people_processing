@@ -8,7 +8,7 @@ function gdrive_download () {
 #used paths
 BAGFILENAME=$(pwd)"/tmp/velodyne.bag"
 PCLBAGFILENAME=$(pwd)"/tmp/pcl.bag"
-LINKSFILENAME=$(pwd)"/ssdbags.txt"
+LINKSFILENAME=$(pwd)"/links.txt"
 CHANGESFILENAME=$(pwd)"/tmp/changes.txt"
 
 #preparation
@@ -27,22 +27,22 @@ while read line; do
   curbagpath=$curbagname
   curbagname=$(basename $curbagname)
   echo processing bag $curbagname
-  #if [ -d $(pwd)/output/$curbagname ]; then
-  #  echo bag already processed, moving on
-  #  ((curbag++))
-  #  continue
-  #fi
+  if [ -d $(pwd)/output/$curbagname ]; then
+    echo bag already processed, moving on
+    ((curbag++))
+    continue
+  fi
   #download the bag
-  #echo started downloading $curbagname
-  #gdrive_download ${line[1]} $BAGFILENAME < /dev/null &> /dev/null
-  #echo download finished
+  echo started downloading $curbagname
+  gdrive_download ${line[1]} $BAGFILENAME < /dev/null &> /dev/null
+  echo download finished
   #convert it to pointcloud
   echo started converting velodyne scans to point cloud to $PCLBAGFILENAME
-  roslaunch velodyne/velodyne2pointcloud.launch bag:=$curbagpath output_bag:=$PCLBAGFILENAME < /dev/null &> /dev/null
+  #roslaunch velodyne/velodyne2pointcloud.launch bag:=$BAGFILENAME output_bag:=$PCLBAGFILENAME < /dev/null &> /dev/null
   echo converting finished
   #run the change detection
   echo started change detection
-  change_dec/octree_change_detection $PCLBAGFILENAME < /dev/null 2> /dev/null > $CHANGESFILENAME
+  #change_det/octree_change_detection $PCLBAGFILENAME < /dev/null 2> /dev/null > $CHANGESFILENAME
   echo change detection finished
   #run people detector on intervals and save the data
   echo starting people detector
@@ -59,10 +59,12 @@ while read line; do
     ((curint++))
   done < $CHANGESFILENAME
   echo detecting finished
-  #clean up
+  #clean up (is it neccesary though?)
   rm $PCLBAGFILENAME
-  #rm $BAGFILENAME
+  rm $BAGFILENAME
   ((curbag++))
+  break
+
 done < $LINKSFILENAME
 rm -rf tmp/*
 echo all rosbags processed
