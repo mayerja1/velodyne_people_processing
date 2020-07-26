@@ -8,15 +8,19 @@ function gdrive_download () {
 #used paths
 BAGFILENAME=$(pwd)"/tmp/velodyne.bag"
 PCLBAGFILENAME=$(pwd)"/tmp/pcl.bag"
-LINKSFILENAME=$(pwd)"/links.txt"
+#LINKSFILENAME=$(pwd)"/links.txt"
 CHANGESFILENAME=$(pwd)"/tmp/changes.txt"
+BAGFOLDER="/home/honza/mayerja1_gdrive/UTBM-dataset/01/"
+FILESLIST="files.txt"
+
 
 #preparation
-source ~/catkin_ws/devel/setup.bash
-export OMP_CANCELLATION=true
+#source ~/catkin_ws/devel/setup.bash
+#export OMP_CANCELLATION=true
 mkdir -p output
 mkdir -p tmp
 rm -rf tmp/*
+find $BAGFOLDER -maxdepth 1 -type f > $FILESLIST
 
 #number of bag being processed
 curbag=1
@@ -34,7 +38,8 @@ while read line; do
   fi
   #download the bag
   echo started downloading $curbagname
-  gdrive_download ${line[1]} $BAGFILENAME < /dev/null &> /dev/null
+  #gdrive_download ${line[1]} $BAGFILENAME < /dev/null &> /dev/null
+  cp $curbagpath tmp
   echo download finished
   #convert it to pointcloud
   echo started converting velodyne scans to point cloud to $PCLBAGFILENAME
@@ -42,7 +47,7 @@ while read line; do
   echo converting finished
   #run the change detection
   echo started change detection
-  #change_det/octree_change_detection $PCLBAGFILENAME < /dev/null 2> /dev/null > $CHANGESFILENAME
+  change_det/octree_change_detection $PCLBAGFILENAME < /dev/null 2> /dev/null > $CHANGESFILENAME
   echo change detection finished
   #run people detector on intervals and save the data
   echo starting people detector
@@ -54,7 +59,7 @@ while read line; do
     start=${arr[0]}
     end=${arr[1]}
     length=$((end-start))
-    roslaunch velodyne/velodyne_interval.launch bag:=$BAGFILENAME start:=$start length:=$length output_bag:=$OUTPUTPATH/$curint < /dev/null &> /dev/null
+    roslaunch velodyne/velodyne_interval.launch bag:=$curbagpath start:=$start length:=$length output_bag:=$OUTPUTPATH/$curint < /dev/null &> /dev/null
     #python people_msgs2csv/people_msgs2csv.py $OUTPUTPATH/$curint.bag $OUTPUTPATH/$curint.csv
     ((curint++))
   done < $CHANGESFILENAME
@@ -64,6 +69,6 @@ while read line; do
   rm $BAGFILENAME
   ((curbag++))
 
-done < $LINKSFILENAME
+done < $FILESLIST
 rm -rf tmp/*
 echo all rosbags processed
