@@ -59,7 +59,7 @@ while read line; do
     start=${arr[0]}
     end=${arr[1]}
     length=$((end-start))
-    roslaunch velodyne/velodyne_interval.launch bag:=$curbagpath start:=$start length:=$length output_bag:=$OUTPUTPATH/$curint < /dev/null &> /dev/null
+    roslaunch velodyne/velodyne_interval.launch bag:="tmp/"$curbagname start:=$start length:=$length output_bag:=$OUTPUTPATH/$curint < /dev/null &> /dev/null
     #python people_msgs2csv/people_msgs2csv.py $OUTPUTPATH/$curint.bag $OUTPUTPATH/$curint.csv
     ((curint++))
   done < $CHANGESFILENAME
